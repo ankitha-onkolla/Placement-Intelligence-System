@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Intelligence System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5fb;
+            color: #172554;
+        }
+
+        header {
+            background: #123b78;
+            color: white;
+            padding: 25px 40px;
+        }
+
+        header h1 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        main {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome p {
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: #334155;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+        }
+
+        .upload-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin: 20px 0;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            width: 100%;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+
+            main {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Placement Intelligence System</h1>
+        <p>AI-Powered Student Placement Dashboard</p>
+    </header>
+
+    <main>
+
+        <div class="welcome">
+            <h2>Welcome, Student!</h2>
+            <p>Analyze your resume, improve your skills and prepare for placements.</p>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Students</h3>
+                <p class="number">250</p>
+            </div>
+
+            <div class="card">
+                <h3>Companies</h3>
+                <p class="number">35</p>
+            </div>
+
+            <div class="card">
+                <h3>Placed Students</h3>
+                <p class="number">180</p>
+            </div>
+
+            <div class="card">
+                <h3>Placement Rate</h3>
+                <p class="number">72%</p>
+            </div>
+
+        </div>
+
+        <section class="section">
+            <h2>AI Resume Analyzer</h2>
+
+            <div class="upload-card">
+                <h3>Upload Your Resume</h3>
+
+                <p>
+                    Upload your resume in PDF or DOCX format
+                    to analyze your skills and placement readiness.
+                </p>
+
+                <form action="/upload-resume"
+                      method="POST"
+                      enctype="multipart/form-data">
+
+                    <input type="file"
+                           name="resume"
+                           accept=".pdf,.docx"
+                           required>
+
+                    <button type="submit">Analyze Resume</button>
+
+                </form>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>System Features</h2>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <h3>Resume Analysis</h3>
+                    <p>Upload and analyze student resumes.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Skill Assessment</h3>
+                    <p>Identify technical skills and missing skills.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Job Matching</h3>
+                    <p>Find suitable job opportunities based on skills.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Placement Prediction</h3>
+                    <p>Estimate placement readiness using student data.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        B.Tech Demonstration Project | Placement Intelligence System
+        <br><br>
+        This is a student demonstration prototype, not a production placement platform.
+    </footer>
+
+</body>
+</html>
