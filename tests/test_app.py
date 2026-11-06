@@ -5,7 +5,8 @@ from app import (
     app,
     analyze_skill_gap,
     recommend_jobs,
-    predict_placement_readiness
+    predict_placement_readiness,
+    generate_learning_roadmap
 )
 
 
@@ -65,3 +66,12 @@ def test_placement_readiness_prediction():
 
     assert result["score"] == 80
     assert result["status"] == "High Readiness"
+
+
+def test_learning_roadmap():
+    roadmap = generate_learning_roadmap(["SQL", "Machine Learning"])
+
+    assert len(roadmap) == 2
+    assert roadmap[0]["skill"] == "SQL"
+    assert roadmap[0]["duration"] == "2 weeks"
+    assert roadmap[1]["skill"] == "Machine Learning"

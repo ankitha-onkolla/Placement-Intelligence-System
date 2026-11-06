@@ -17,6 +17,8 @@ app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+
+# Skills database
 SKILLS_LIST = [
     "Python", "Java", "C", "C++", "SQL",
     "HTML", "CSS", "JavaScript", "React",
@@ -26,6 +28,8 @@ SKILLS_LIST = [
     "MySQL", "Communication", "Git"
 ]
 
+
+# Job role requirements
 JOB_SKILLS = {
     "Python Developer": [
         "Python", "SQL", "Flask", "Django", "Git"
@@ -43,6 +47,82 @@ JOB_SKILLS = {
 }
 
 
+# Learning roadmap database
+LEARNING_ROADMAP = {
+    "SQL": {
+        "level": "Beginner",
+        "topics": "SQL basics, SELECT, WHERE, GROUP BY, JOIN",
+        "duration": "2 weeks"
+    },
+    "Machine Learning": {
+        "level": "Intermediate",
+        "topics": "Regression, Classification, Clustering, Model Evaluation",
+        "duration": "4 weeks"
+    },
+    "Python": {
+        "level": "Beginner",
+        "topics": "Variables, Loops, Functions, OOP",
+        "duration": "3 weeks"
+    },
+    "Excel": {
+        "level": "Beginner",
+        "topics": "Formulas, Charts, Pivot Tables",
+        "duration": "2 weeks"
+    },
+    "Power BI": {
+        "level": "Intermediate",
+        "topics": "Data Cleaning, Visualizations, Dashboards",
+        "duration": "3 weeks"
+    },
+    "Data Analytics": {
+        "level": "Beginner",
+        "topics": "Data Cleaning, Analysis, Visualization",
+        "duration": "3 weeks"
+    },
+    "HTML": {
+        "level": "Beginner",
+        "topics": "HTML Tags, Forms, Tables, Semantic HTML",
+        "duration": "1 week"
+    },
+    "CSS": {
+        "level": "Beginner",
+        "topics": "Selectors, Flexbox, Grid, Responsive Design",
+        "duration": "2 weeks"
+    },
+    "JavaScript": {
+        "level": "Intermediate",
+        "topics": "Variables, Functions, DOM, Events",
+        "duration": "3 weeks"
+    },
+    "React": {
+        "level": "Intermediate",
+        "topics": "Components, Props, State, Hooks",
+        "duration": "4 weeks"
+    },
+    "Flask": {
+        "level": "Intermediate",
+        "topics": "Routes, Templates, Forms, APIs",
+        "duration": "2 weeks"
+    },
+    "Django": {
+        "level": "Intermediate",
+        "topics": "Models, Views, Templates, Django ORM",
+        "duration": "3 weeks"
+    },
+    "Git": {
+        "level": "Beginner",
+        "topics": "Repositories, Commits, Branches, Push and Pull",
+        "duration": "1 week"
+    },
+    "Data Science": {
+        "level": "Intermediate",
+        "topics": "Statistics, Data Processing, Data Visualization",
+        "duration": "4 weeks"
+    }
+}
+
+
+# Check uploaded file type
 def allowed_file(filename):
     return (
         "." in filename
@@ -50,6 +130,7 @@ def allowed_file(filename):
     )
 
 
+# Extract text from PDF and DOCX
 def extract_resume_text(filepath):
     extension = filepath.rsplit(".", 1)[1].lower()
 
@@ -69,6 +150,7 @@ def extract_resume_text(filepath):
     return ""
 
 
+# Extract skills from resume
 def analyze_skills(text):
     found_skills = []
 
@@ -81,6 +163,7 @@ def analyze_skills(text):
     return found_skills
 
 
+# Calculate skill gap
 def analyze_skill_gap(found_skills, job_role):
     required_skills = JOB_SKILLS.get(job_role, [])
 
@@ -104,10 +187,12 @@ def analyze_skill_gap(found_skills, job_role):
     return available_skills, missing_skills, match_percentage
 
 
+# Job recommendation system
 def recommend_jobs(found_skills):
     recommendations = []
 
     for role, required_skills in JOB_SKILLS.items():
+
         matched_skills = [
             skill for skill in required_skills
             if skill in found_skills
@@ -134,7 +219,7 @@ def recommend_jobs(found_skills):
     return recommendations
 
 
-# NEW FEATURE: Placement Readiness Prediction
+# Placement readiness prediction
 def predict_placement_readiness(match_percentage):
     score = max(0, min(100, match_percentage))
 
@@ -157,11 +242,39 @@ def predict_placement_readiness(match_percentage):
     }
 
 
+# NEW FEATURE: Skill Development Roadmap
+def generate_learning_roadmap(missing_skills):
+    roadmap = []
+
+    for skill in missing_skills:
+        details = LEARNING_ROADMAP.get(skill)
+
+        if details:
+            roadmap.append({
+                "skill": skill,
+                "level": details["level"],
+                "topics": details["topics"],
+                "duration": details["duration"]
+            })
+
+        else:
+            roadmap.append({
+                "skill": skill,
+                "level": "Beginner",
+                "topics": "Learn the fundamentals and practise with projects",
+                "duration": "2 weeks"
+            })
+
+    return roadmap
+
+
+# Homepage
 @app.route("/")
 def home():
     return render_template("dashboard.html")
 
 
+# Resume upload and analysis
 @app.route("/upload-resume", methods=["POST"])
 def upload_resume():
 
@@ -204,6 +317,9 @@ def upload_resume():
 
         readiness = predict_placement_readiness(percentage)
 
+        # Generate learning roadmap
+        roadmap = generate_learning_roadmap(missing)
+
         result_html = """
         <!DOCTYPE html>
         <html lang="en">
@@ -213,7 +329,9 @@ def upload_resume():
             <title>Placement Analysis Report</title>
 
             <style>
-                * { box-sizing: border-box; }
+                * {
+                    box-sizing: border-box;
+                }
 
                 body {
                     font-family: Arial, sans-serif;
@@ -231,9 +349,13 @@ def upload_resume():
                     box-shadow: 0 3px 12px #0000000d;
                 }
 
-                h1, h2 { color: #173c70; }
+                h1, h2 {
+                    color: #173c70;
+                }
 
-                h2 { margin-top: 30px; }
+                h2 {
+                    margin-top: 30px;
+                }
 
                 .percentage {
                     font-size: 40px;
@@ -299,6 +421,23 @@ def upload_resume():
                     width: {{ readiness.score }}%;
                 }
 
+                .roadmap-card {
+                    background: #f6f9ff;
+                    border-left: 4px solid #167443;
+                    padding: 18px;
+                    margin: 12px 0;
+                    border-radius: 8px;
+                }
+
+                .duration {
+                    display: inline-block;
+                    background: #e1f5e8;
+                    color: #167443;
+                    padding: 6px 10px;
+                    border-radius: 5px;
+                    font-weight: bold;
+                }
+
                 .note {
                     background: #fff8df;
                     padding: 15px;
@@ -318,7 +457,9 @@ def upload_resume():
                 }
 
                 @media(max-width: 600px) {
-                    .container { padding: 18px; }
+                    .container {
+                        padding: 18px;
+                    }
                 }
             </style>
         </head>
@@ -380,6 +521,28 @@ def upload_resume():
                     <p>All listed skills for this role were found!</p>
                 {% endif %}
 
+                <h2>Skill Development Roadmap</h2>
+
+                <p>Suggested topics to improve your missing skills:</p>
+
+                {% if roadmap %}
+                    {% for item in roadmap %}
+                        <div class="roadmap-card">
+                            <h3>{{ loop.index }}. {{ item.skill }}</h3>
+
+                            <p><b>Level:</b> {{ item.level }}</p>
+
+                            <p><b>Topics to learn:</b> {{ item.topics }}</p>
+
+                            <span class="duration">
+                                Suggested duration: {{ item.duration }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Great! No missing skills. Continue practising projects.</p>
+                {% endif %}
+
                 <h2>Recommended Job Roles</h2>
 
                 <p>Job roles ranked according to resume skill matches:</p>
@@ -407,9 +570,10 @@ def upload_resume():
                     <b>Important Note:</b>
                     This is a rule-based educational prototype.
                     Readiness is calculated from the selected role's
-                    skill match percentage. It is not a trained ML
-                    placement prediction model and does not guarantee
-                    employment or placement.
+                    skill-match percentage. Learning durations are
+                    suggestions, not guaranteed completion times.
+                    This system is not a trained ML placement model
+                    and does not guarantee employment or placement.
                 </div>
 
                 <a href="/">Analyze Another Resume</a>
@@ -428,7 +592,8 @@ def upload_resume():
             missing=missing,
             percentage=percentage,
             recommendations=recommendations,
-            readiness=readiness
+            readiness=readiness,
+            roadmap=roadmap
         )
 
     except Exception:
@@ -439,6 +604,7 @@ def upload_resume():
         ), 400
 
 
+# Health check API
 @app.route("/health")
 def health():
     return {
@@ -447,6 +613,7 @@ def health():
     }
 
 
+# File size error handler
 @app.errorhandler(413)
 def file_too_large(error):
     return "File is too large. Maximum allowed size is 10 MB.", 413
