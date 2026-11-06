@@ -3,4 +3,4 @@ PyMuPDF
 python-docx
 scikit-learn
 pandas
-pytest
+pytestgit 
