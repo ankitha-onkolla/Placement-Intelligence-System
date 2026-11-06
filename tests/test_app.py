@@ -1,6 +1,12 @@
 
-from app import app, analyze_skill_gap
 import io
+
+from app import (
+    app,
+    analyze_skill_gap,
+    recommend_jobs,
+    predict_placement_readiness
+)
 
 
 def test_homepage():
@@ -24,6 +30,7 @@ def test_invalid_resume_file():
         },
         content_type="multipart/form-data"
     )
+
     assert response.status_code == 200
     assert b"Only PDF and DOCX" in response.data
 
@@ -39,3 +46,22 @@ def test_skill_gap_analysis():
     assert "Power BI" in missing
     assert "Data Analytics" in missing
     assert percentage == 60
+
+
+def test_job_recommendations():
+    found_skills = [
+        "Python", "SQL", "Excel", "Power BI", "Data Analytics"
+    ]
+
+    recommendations = recommend_jobs(found_skills)
+
+    assert len(recommendations) == 4
+    assert recommendations[0]["role"] == "Data Analyst"
+    assert recommendations[0]["match"] == 100
+
+
+def test_placement_readiness_prediction():
+    result = predict_placement_readiness(80)
+
+    assert result["score"] == 80
+    assert result["status"] == "High Readiness"

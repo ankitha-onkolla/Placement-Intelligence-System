@@ -17,8 +17,6 @@ app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-
-# Skills database
 SKILLS_LIST = [
     "Python", "Java", "C", "C++", "SQL",
     "HTML", "CSS", "JavaScript", "React",
@@ -28,8 +26,6 @@ SKILLS_LIST = [
     "MySQL", "Communication", "Git"
 ]
 
-
-# Job role requirements
 JOB_SKILLS = {
     "Python Developer": [
         "Python", "SQL", "Flask", "Django", "Git"
@@ -47,7 +43,6 @@ JOB_SKILLS = {
 }
 
 
-# Check uploaded file type
 def allowed_file(filename):
     return (
         "." in filename
@@ -55,7 +50,6 @@ def allowed_file(filename):
     )
 
 
-# Extract text from PDF and DOCX
 def extract_resume_text(filepath):
     extension = filepath.rsplit(".", 1)[1].lower()
 
@@ -75,7 +69,6 @@ def extract_resume_text(filepath):
     return ""
 
 
-# Extract skills from resume
 def analyze_skills(text):
     found_skills = []
 
@@ -88,7 +81,6 @@ def analyze_skills(text):
     return found_skills
 
 
-# Calculate skill gap
 def analyze_skill_gap(found_skills, job_role):
     required_skills = JOB_SKILLS.get(job_role, [])
 
@@ -112,12 +104,10 @@ def analyze_skill_gap(found_skills, job_role):
     return available_skills, missing_skills, match_percentage
 
 
-# NEW FEATURE: Job Recommendation System
 def recommend_jobs(found_skills):
     recommendations = []
 
     for role, required_skills in JOB_SKILLS.items():
-
         matched_skills = [
             skill for skill in required_skills
             if skill in found_skills
@@ -144,13 +134,34 @@ def recommend_jobs(found_skills):
     return recommendations
 
 
-# Homepage
+# NEW FEATURE: Placement Readiness Prediction
+def predict_placement_readiness(match_percentage):
+    score = max(0, min(100, match_percentage))
+
+    if score >= 80:
+        status = "High Readiness"
+        message = "Your skill profile strongly matches this job role."
+
+    elif score >= 50:
+        status = "Moderate Readiness"
+        message = "Improve your missing skills to become more job-ready."
+
+    else:
+        status = "Needs Improvement"
+        message = "Focus on learning the required technical skills."
+
+    return {
+        "score": score,
+        "status": status,
+        "message": message
+    }
+
+
 @app.route("/")
 def home():
     return render_template("dashboard.html")
 
 
-# Resume upload and analysis
 @app.route("/upload-resume", methods=["POST"])
 def upload_resume():
 
@@ -189,8 +200,9 @@ def upload_resume():
             found_skills, job_role
         )
 
-        # Generate job recommendations
         recommendations = recommend_jobs(found_skills)
+
+        readiness = predict_placement_readiness(percentage)
 
         result_html = """
         <!DOCTYPE html>
@@ -201,9 +213,7 @@ def upload_resume():
             <title>Placement Analysis Report</title>
 
             <style>
-                * {
-                    box-sizing: border-box;
-                }
+                * { box-sizing: border-box; }
 
                 body {
                     font-family: Arial, sans-serif;
@@ -221,13 +231,9 @@ def upload_resume():
                     box-shadow: 0 3px 12px #0000000d;
                 }
 
-                h1, h2 {
-                    color: #173c70;
-                }
+                h1, h2 { color: #173c70; }
 
-                h2 {
-                    margin-top: 30px;
-                }
+                h2 { margin-top: 30px; }
 
                 .percentage {
                     font-size: 40px;
@@ -264,6 +270,35 @@ def upload_resume():
                     font-size: 20px;
                 }
 
+                .readiness-card {
+                    background: #edf6ff;
+                    border-left: 5px solid #2463ad;
+                    padding: 20px;
+                    margin-top: 20px;
+                    border-radius: 8px;
+                }
+
+                .readiness-score {
+                    font-size: 42px;
+                    font-weight: bold;
+                    color: #2463ad;
+                    margin: 10px 0;
+                }
+
+                .progress {
+                    width: 100%;
+                    height: 14px;
+                    background: #dce5f2;
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+
+                .progress-fill {
+                    height: 100%;
+                    background: #2463ad;
+                    width: {{ readiness.score }}%;
+                }
+
                 .note {
                     background: #fff8df;
                     padding: 15px;
@@ -283,9 +318,7 @@ def upload_resume():
                 }
 
                 @media(max-width: 600px) {
-                    .container {
-                        padding: 18px;
-                    }
+                    .container { padding: 18px; }
                 }
             </style>
         </head>
@@ -300,6 +333,22 @@ def upload_resume():
 
                 <h2>Job Skill Match</h2>
                 <div class="percentage">{{ percentage }}%</div>
+
+                <h2>Placement Readiness Prediction</h2>
+
+                <div class="readiness-card">
+                    <h3>{{ readiness.status }}</h3>
+
+                    <div class="readiness-score">
+                        {{ readiness.score }}%
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-fill"></div>
+                    </div>
+
+                    <p>{{ readiness.message }}</p>
+                </div>
 
                 <h2>Skills Found in Resume</h2>
 
@@ -357,9 +406,10 @@ def upload_resume():
                 <div class="note">
                     <b>Important Note:</b>
                     This is a rule-based educational prototype.
-                    Job recommendations are based on predefined skill
-                    keywords, not a trained AI model. A skill match
-                    does not guarantee job eligibility or placement.
+                    Readiness is calculated from the selected role's
+                    skill match percentage. It is not a trained ML
+                    placement prediction model and does not guarantee
+                    employment or placement.
                 </div>
 
                 <a href="/">Analyze Another Resume</a>
@@ -377,7 +427,8 @@ def upload_resume():
             available=available,
             missing=missing,
             percentage=percentage,
-            recommendations=recommendations
+            recommendations=recommendations,
+            readiness=readiness
         )
 
     except Exception:
@@ -388,7 +439,6 @@ def upload_resume():
         ), 400
 
 
-# Health check API
 @app.route("/health")
 def health():
     return {
@@ -397,7 +447,6 @@ def health():
     }
 
 
-# File size error handler
 @app.errorhandler(413)
 def file_too_large(error):
     return "File is too large. Maximum allowed size is 10 MB.", 413
