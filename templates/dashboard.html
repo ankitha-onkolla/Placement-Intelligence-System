@@ -11,135 +11,134 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f1f5fb;
-            color: #172554;
+            background: #f2f5fc;
+            color: #26334d;
         }
 
         header {
-            background: #123b78;
+            background: linear-gradient(120deg, #102b55, #2463ad);
             color: white;
-            padding: 25px 40px;
+            padding: 28px 7%;
         }
 
         header h1 {
-            font-size: 27px;
+            font-size: 28px;
             margin-bottom: 8px;
         }
 
-        main {
-            padding: 30px;
-            max-width: 1200px;
-            margin: auto;
+        header p {
+            color: #dce9ff;
         }
 
-        .welcome {
-            margin-bottom: 25px;
+        .container {
+            width: 86%;
+            margin: 30px auto;
         }
 
-        .welcome p {
-            color: #64748b;
-            margin-top: 8px;
-        }
-
-        .cards {
+        .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
         }
 
-        .card {
+        .stat-card {
             background: white;
-            padding: 25px;
+            padding: 23px;
             border-radius: 12px;
-            box-shadow: 0 3px 12px #00000010;
+            box-shadow: 0 3px 12px #0000000d;
         }
 
-        .card h3 {
-            margin-bottom: 15px;
-            color: #334155;
-        }
-
-        .number {
-            font-size: 30px;
-            font-weight: bold;
-            color: #2563eb;
+        .stat-card h2 {
+            color: #2463ad;
+            font-size: 29px;
+            margin-bottom: 8px;
         }
 
         .section {
-            margin-top: 30px;
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px #0000000d;
         }
 
         .section h2 {
-            margin-bottom: 15px;
+            color: #173c70;
+            margin-bottom: 18px;
         }
 
-        .upload-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-top: 15px;
-            box-shadow: 0 3px 12px #00000010;
+        .section p {
+            line-height: 1.6;
+            margin-bottom: 14px;
         }
 
-        input[type="file"] {
+        label {
             display: block;
-            margin: 20px 0;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 7px;
+            font-weight: bold;
+            margin: 15px 0 8px;
+        }
+
+        input[type="file"], select {
             width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd5e3;
+            border-radius: 7px;
+            background: white;
         }
 
         button {
-            background: #2563eb;
+            background: #2463ad;
             color: white;
             border: none;
-            padding: 13px 25px;
+            padding: 13px 24px;
             border-radius: 7px;
             cursor: pointer;
+            margin-top: 18px;
             font-size: 15px;
         }
 
         button:hover {
-            background: #1d4ed8;
+            background: #173c70;
         }
 
-        .feature-grid {
+        .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
         }
 
         .feature-card {
-            background: white;
+            background: #f6f9ff;
             padding: 22px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px #00000010;
+            border-radius: 10px;
+            border-left: 4px solid #2463ad;
         }
 
-        .feature-card p {
-            color: #64748b;
-            margin-top: 10px;
-            line-height: 1.5;
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: #173c70;
         }
 
         footer {
             text-align: center;
-            padding: 25px;
-            color: #64748b;
+            padding: 22px;
+            background: #102b55;
+            color: white;
+            margin-top: 30px;
         }
 
-        @media (max-width: 600px) {
-            header {
-                padding: 20px;
+        @media(max-width: 600px) {
+            .container {
+                width: 92%;
             }
 
-            main {
-                padding: 18px;
+            header h1 {
+                font-size: 23px;
             }
         }
     </style>
@@ -147,103 +146,116 @@
 
 <body>
 
-    <header>
-        <h1>Placement Intelligence System</h1>
-        <p>AI-Powered Student Placement Dashboard</p>
-    </header>
+<header>
+    <h1>Placement Intelligence System</h1>
+    <p>AI-Powered Student Placement Dashboard</p>
+</header>
 
-    <main>
+<div class="container">
 
-        <div class="welcome">
-            <h2>Welcome, Student!</h2>
-            <p>Analyze your resume, improve your skills and prepare for placements.</p>
+    <div class="stats">
+        <div class="stat-card">
+            <h2>250</h2>
+            <p>Total Students</p>
         </div>
 
-        <div class="cards">
-
-            <div class="card">
-                <h3>Total Students</h3>
-                <p class="number">250</p>
-            </div>
-
-            <div class="card">
-                <h3>Companies</h3>
-                <p class="number">35</p>
-            </div>
-
-            <div class="card">
-                <h3>Placed Students</h3>
-                <p class="number">180</p>
-            </div>
-
-            <div class="card">
-                <h3>Placement Rate</h3>
-                <p class="number">72%</p>
-            </div>
-
+        <div class="stat-card">
+            <h2>35</h2>
+            <p>Companies</p>
         </div>
 
-        <section class="section">
-            <h2>AI Resume Analyzer</h2>
+        <div class="stat-card">
+            <h2>180</h2>
+            <p>Placed Students</p>
+        </div>
 
-            <div class="upload-card">
-                <h3>Upload Your Resume</h3>
+        <div class="stat-card">
+            <h2>72%</h2>
+            <p>Placement Rate</p>
+        </div>
+    </div>
 
-                <p>
-                    Upload your resume in PDF or DOCX format
-                    to analyze your skills and placement readiness.
-                </p>
+    <div class="section">
+        <h2>AI Resume Analyzer</h2>
+        <p>Upload your resume in PDF or DOCX format to identify your skills.</p>
 
-                <form action="/upload-resume"
-                      method="POST"
-                      enctype="multipart/form-data">
+        <form action="/upload-resume" method="POST"
+              enctype="multipart/form-data">
 
-                    <input type="file"
-                           name="resume"
-                           accept=".pdf,.docx"
-                           required>
+            <label for="resume">Upload Your Resume:</label>
+            <input type="file" id="resume" name="resume"
+                   accept=".pdf,.docx" required>
 
-                    <button type="submit">Analyze Resume</button>
+            <label for="job_role">Select Target Job Role:</label>
+            <select name="job_role" id="job_role" required>
+                <option value="">Select Job Role</option>
+                <option value="Python Developer">Python Developer</option>
+                <option value="Data Analyst">Data Analyst</option>
+                <option value="Web Developer">Web Developer</option>
+                <option value="Data Scientist">Data Scientist</option>
+            </select>
 
-                </form>
+            <button type="submit">Analyze Resume</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>Student Skill Gap Analysis</h2>
+        <p>
+            The system compares the skills identified in a student's resume
+            with the skills required for the selected job role.
+        </p>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>Available Skills</h3>
+                <p>Identifies skills already mentioned in the resume.</p>
             </div>
-        </section>
 
-        <section class="section">
-            <h2>System Features</h2>
-
-            <div class="feature-grid">
-
-                <div class="feature-card">
-                    <h3>Resume Analysis</h3>
-                    <p>Upload and analyze student resumes.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Skill Assessment</h3>
-                    <p>Identify technical skills and missing skills.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Job Matching</h3>
-                    <p>Find suitable job opportunities based on skills.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Placement Prediction</h3>
-                    <p>Estimate placement readiness using student data.</p>
-                </div>
-
+            <div class="feature-card">
+                <h3>Missing Skills</h3>
+                <p>Identifies important job skills not found in the resume.</p>
             </div>
-        </section>
 
-    </main>
+            <div class="feature-card">
+                <h3>Learning Recommendations</h3>
+                <p>Suggests skills that students can learn to improve job readiness.</p>
+            </div>
+        </div>
+    </div>
 
-    <footer>
-        B.Tech Demonstration Project | Placement Intelligence System
-        <br><br>
-        This is a student demonstration prototype, not a production placement platform.
-    </footer>
+    <div class="section">
+        <h2>System Features</h2>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>Resume Analysis</h3>
+                <p>Extracts information and skills from uploaded resumes.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Skill Assessment</h3>
+                <p>Evaluates student skills based on resume content.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Job Matching</h3>
+                <p>Helps compare student skills with job requirements.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Placement Prediction</h3>
+                <p>Provides a foundation for future placement prediction features.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>Placement Intelligence System | B.Tech Demonstration Prototype</p>
+    <p>Not production government or company infrastructure.</p>
+</footer>
 
 </body>
 </html>
