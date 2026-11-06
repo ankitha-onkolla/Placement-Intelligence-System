@@ -17,7 +17,8 @@ app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Skills used for resume analysis
+
+# Skills database
 SKILLS_LIST = [
     "Python", "Java", "C", "C++", "SQL",
     "HTML", "CSS", "JavaScript", "React",
@@ -27,7 +28,8 @@ SKILLS_LIST = [
     "MySQL", "Communication", "Git"
 ]
 
-# Job role skill requirements (prototype rules)
+
+# Job role requirements
 JOB_SKILLS = {
     "Python Developer": [
         "Python", "SQL", "Flask", "Django", "Git"
@@ -45,6 +47,7 @@ JOB_SKILLS = {
 }
 
 
+# Check uploaded file type
 def allowed_file(filename):
     return (
         "." in filename
@@ -52,6 +55,7 @@ def allowed_file(filename):
     )
 
 
+# Extract text from PDF and DOCX
 def extract_resume_text(filepath):
     extension = filepath.rsplit(".", 1)[1].lower()
 
@@ -71,6 +75,7 @@ def extract_resume_text(filepath):
     return ""
 
 
+# Extract skills from resume
 def analyze_skills(text):
     found_skills = []
 
@@ -83,6 +88,7 @@ def analyze_skills(text):
     return found_skills
 
 
+# Calculate skill gap
 def analyze_skill_gap(found_skills, job_role):
     required_skills = JOB_SKILLS.get(job_role, [])
 
@@ -106,11 +112,45 @@ def analyze_skill_gap(found_skills, job_role):
     return available_skills, missing_skills, match_percentage
 
 
+# NEW FEATURE: Job Recommendation System
+def recommend_jobs(found_skills):
+    recommendations = []
+
+    for role, required_skills in JOB_SKILLS.items():
+
+        matched_skills = [
+            skill for skill in required_skills
+            if skill in found_skills
+        ]
+
+        if required_skills:
+            match_percentage = round(
+                len(matched_skills) / len(required_skills) * 100
+            )
+        else:
+            match_percentage = 0
+
+        recommendations.append({
+            "role": role,
+            "match": match_percentage,
+            "matched_skills": matched_skills
+        })
+
+    recommendations.sort(
+        key=lambda item: item["match"],
+        reverse=True
+    )
+
+    return recommendations
+
+
+# Homepage
 @app.route("/")
 def home():
     return render_template("dashboard.html")
 
 
+# Resume upload and analysis
 @app.route("/upload-resume", methods=["POST"])
 def upload_resume():
 
@@ -149,37 +189,53 @@ def upload_resume():
             found_skills, job_role
         )
 
+        # Generate job recommendations
+        recommendations = recommend_jobs(found_skills)
+
         result_html = """
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Resume Analysis Results</title>
+            <title>Placement Analysis Report</title>
+
             <style>
+                * {
+                    box-sizing: border-box;
+                }
+
                 body {
                     font-family: Arial, sans-serif;
                     background: #f2f5fc;
                     color: #26334d;
-                    padding: 30px;
+                    padding: 25px;
                 }
+
                 .container {
-                    max-width: 850px;
+                    max-width: 900px;
                     margin: auto;
                     background: white;
                     padding: 30px;
                     border-radius: 12px;
                     box-shadow: 0 3px 12px #0000000d;
                 }
+
                 h1, h2 {
                     color: #173c70;
                 }
+
+                h2 {
+                    margin-top: 30px;
+                }
+
                 .percentage {
-                    font-size: 38px;
+                    font-size: 40px;
                     color: #2463ad;
                     font-weight: bold;
                     margin: 15px 0;
                 }
+
                 .skill {
                     display: inline-block;
                     background: #e7f1ff;
@@ -188,16 +244,34 @@ def upload_resume():
                     margin: 5px;
                     border-radius: 6px;
                 }
+
                 .missing {
                     background: #fff0e9;
                     color: #a23c18;
                 }
+
+                .job-card {
+                    background: #f6f9ff;
+                    border-left: 4px solid #2463ad;
+                    padding: 17px;
+                    margin: 12px 0;
+                    border-radius: 8px;
+                }
+
+                .match {
+                    color: #167443;
+                    font-weight: bold;
+                    font-size: 20px;
+                }
+
                 .note {
                     background: #fff8df;
-                    padding: 12px;
+                    padding: 15px;
                     border-radius: 7px;
-                    line-height: 1.5;
+                    line-height: 1.6;
+                    margin-top: 25px;
                 }
+
                 a {
                     display: inline-block;
                     margin-top: 25px;
@@ -207,18 +281,28 @@ def upload_resume():
                     text-decoration: none;
                     border-radius: 7px;
                 }
+
+                @media(max-width: 600px) {
+                    .container {
+                        padding: 18px;
+                    }
+                }
             </style>
         </head>
+
         <body>
             <div class="container">
-                <h1>Resume Analysis Report</h1>
+
+                <h1>Placement Intelligence Report</h1>
+
                 <p><b>Resume:</b> {{ filename }}</p>
-                <p><b>Target Job Role:</b> {{ job_role }}</p>
+                <p><b>Selected Job Role:</b> {{ job_role }}</p>
 
                 <h2>Job Skill Match</h2>
                 <div class="percentage">{{ percentage }}%</div>
 
                 <h2>Skills Found in Resume</h2>
+
                 {% if found_skills %}
                     {% for skill in found_skills %}
                         <span class="skill">{{ skill }}</span>
@@ -228,6 +312,7 @@ def upload_resume():
                 {% endif %}
 
                 <h2>Available Required Skills</h2>
+
                 {% if available %}
                     {% for skill in available %}
                         <span class="skill">{{ skill }}</span>
@@ -237,6 +322,7 @@ def upload_resume():
                 {% endif %}
 
                 <h2>Missing Skills - Learning Recommendations</h2>
+
                 {% if missing %}
                     {% for skill in missing %}
                         <span class="skill missing">{{ skill }}</span>
@@ -245,14 +331,39 @@ def upload_resume():
                     <p>All listed skills for this role were found!</p>
                 {% endif %}
 
+                <h2>Recommended Job Roles</h2>
+
+                <p>Job roles ranked according to resume skill matches:</p>
+
+                {% for item in recommendations %}
+                    <div class="job-card">
+                        <h3>{{ item.role }}</h3>
+
+                        <p class="match">
+                            {{ item.match }}% Skill Match
+                        </p>
+
+                        <p>
+                            <b>Matching Skills:</b>
+                            {% if item.matched_skills %}
+                                {{ item.matched_skills | join(", ") }}
+                            {% else %}
+                                No matching skills yet
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+
                 <div class="note">
-                    <b>Note:</b> This is a rule-based educational prototype.
-                    It checks keywords in the uploaded resume and compares
-                    them with predefined job-role skills. It does not
-                    guarantee job eligibility or placement.
+                    <b>Important Note:</b>
+                    This is a rule-based educational prototype.
+                    Job recommendations are based on predefined skill
+                    keywords, not a trained AI model. A skill match
+                    does not guarantee job eligibility or placement.
                 </div>
 
                 <a href="/">Analyze Another Resume</a>
+
             </div>
         </body>
         </html>
@@ -265,7 +376,8 @@ def upload_resume():
             found_skills=found_skills,
             available=available,
             missing=missing,
-            percentage=percentage
+            percentage=percentage,
+            recommendations=recommendations
         )
 
     except Exception:
@@ -276,6 +388,7 @@ def upload_resume():
         ), 400
 
 
+# Health check API
 @app.route("/health")
 def health():
     return {
@@ -284,6 +397,7 @@ def health():
     }
 
 
+# File size error handler
 @app.errorhandler(413)
 def file_too_large(error):
     return "File is too large. Maximum allowed size is 10 MB.", 413
